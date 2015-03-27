@@ -32,69 +32,81 @@ Here is an example method that I made
 
 */
 
+package intersection;
+
+import java.awt.geom.Point2D;
+import java.util.ArrayList;
+
+public class EllipseLineIntersection {
+	
+	public static ArrayList<Point2D> getIntersection(double x1, double x2, double y1, double y2, double midX, double midY, double h, double v) {
+	     ArrayList<Point2D> points = new ArrayList();
+
+	     x1 -= midX;
+	     y1 -= midY;
+
+	     x2 -= midX;
+	     y2 -= midY;
+
+	     if (x1 == x2) { 
+	         double y = (v/h)*Math.sqrt(h*h-x1*x1);
+	         if (Math.min(y1, y2) <= y && y <= Math.max(y1, y2)) {
+	             points.add(new Point2D(x1+midX, y+midY ) );
+	         }
+	         if (Math.min(y1, y2) <= -y && -y <= Math.max(y1, y2)) {
+	             points.add(new Point2D(x1+midX, -y+midY));
+	         }
+	     }
+	     else {
+	         double a = (y2 - y1) / (x2 - x1);
+	         double b = (y1 - a*x1);
+
+	         double r = a*a*h*h + v*v;
+	         double s = 2*a*b*h*h;
+	         double t = h*h*b*b - h*h*v*v;
+
+	         double d = s*s - 4*r*t;
+
+	         if (d > 0) {
+	             double xi1 = (-s+Math.sqrt(d))/(2*r);
+	             double xi2 = (-s-Math.sqrt(d))/(2*r);
+
+	             double yi1 = a*xi1+b;
+	             double yi2 = a*xi2+b;
+
+	             if (isPointInLine(x1, x2, y1, y2, xi1, yi1)) {
+	                 points.add(new Point2D.Double(xi1+midX, yi1+midY));
+	             }
+	             if (isPointInLine(x1, x2, y1, y2, xi2, yi2)) {
+	                 points.add(new Point2D.Double(xi2+midX, yi2+midY));
+	             }
+	         }
+	         else if (d == 0) {
+	             double xi = -s/(2*r);
+	             double yi = a*xi+b;
+
+	             if (isPointInLine(x1, x2, y1, y2, xi, yi)) {
+	                 points.add(new Point2D.Double(xi+midX, yi+midY));
+	             }
+	         }
+	     }
+
+	     return points;
+	 }
+
+	 public static boolean isPointInLine(double x1, double x2, double y1, double y2, double px, double py) {
+	     double xMin = Math.min(x1, x2);
+	     double xMax = Math.max(x1, x2);
+
+	     double yMin = Math.min(y1, y2);
+	     double yMax = Math.max(y1, y2);
+
+	     return (xMin <= px && px <= xMax) && (yMin <= py && py <= yMax);
+	 }
+	
+	
+	
+
+}
 
 
-public static ArrayList<Point2D> getIntersection(double x1, double x2, double y1, double y2, double midX, double midY, double h, double v) {
-     ArrayList<Point2D> points = new ArrayList();
-
-     x1 -= midX;
-     y1 -= midY;
-
-     x2 -= midX;
-     y2 -= midY;
-
-     if (x1 == x2) { 
-         double y = (v/h)*Math.sqrt(h*h-x1*x1);
-         if (Math.min(y1, y2) <= y && y <= Math.max(y1, y2)) {
-             points.add(new Point2D(x1+midX, y+midY);
-         }
-         if (Math.min(y1, y2) <= -y && -y <= Math.max(y1, y2)) {
-             points.add(newPoint2D(x1+midX, -y+midY);
-         }
-     }
-     else {
-         double a = (y2 - y1) / (x2 - x1);
-         double b = (y1 - a*x1);
-
-         double r = a*a*h*h + v*v;
-         double s = 2*a*b*h*h;
-         double t = h*h*b*b - h*h*v*v;
-
-         double d = s*s - 4*r*t;
-
-         if (d > 0) {
-             double xi1 = (-s+Math.sqrt(d))/(2*r);
-             double xi2 = (-s-Math.sqrt(d))/(2*r);
-
-             double yi1 = a*xi1+b;
-             double yi2 = a*xi2+b;
-
-             if (isPointInLine(x1, x2, y1, y2, xi1, yi1)) {
-                 points.add(new Point2D.Double(xi1+midX, yi1+midY);
-             }
-             if (isPointInLine(x1, x2, y1, y2, xi2, yi2)) {
-                 points.add(new Point2D.Double(xi2+midX, yi2+midY);
-             }
-         }
-         else if (d == 0) {
-             double xi = -s/(2*r);
-             double yi = a*xi+b;
-
-             if (isPointInLine(x1, x2, y1, y2, xi, yi)) {
-                 points.add(new Point2D.Double(xi+midX, yi+midY));
-             }
-         }
-     }
-
-     return points;
- }
-
- public static boolean isPointInLine(double x1, double x2, double y1, double y2, double px, double py) {
-     double xMin = Math.min(x1, x2);
-     double xMax = Math.max(x1, x2);
-
-     double yMin = Math.min(y1, y2);
-     double yMax = Math.max(y1, y2);
-
-     return (xMin <= px && px <= xMax) && (yMin <= py && py <= yMax);
- }
